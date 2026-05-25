@@ -1,0 +1,3 @@
+NUM_AGENTS : 64
+PORT : 5000
+NETWORKS : ["peernet"]

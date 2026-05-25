@@ -1,26 +1,27 @@
 import yaml
 
-NUM_AGENTS = 64
-PORT = 5000
-NETWORKS = ["peernet"]
+NET_CONGIG_PATH = "./config/network.yaml"
 
 if __name__ == "__main__":
+    with open (NET_CONGIG_PATH, "r") as f:
+        net_config = yaml.safe_load(f)
+
     config = {
         "services": {
             f"node{i}" : {
                 "build" : ".",
                 "environment" : {
                     "NODE_ID" : f"node{i}",
-                    "NEIGHBORS" : ",".join([f"node{j}" for j in range(1, NUM_AGENTS + 1) if j != i])
+                    "NEIGHBORS" : ",".join([f"node{j}" for j in range(1, net_config["NUM_AGENTS"] + 1) if j != i])
                 },
-                "ports" : [f"{PORT + i}:{PORT}"],
-                "networks" : [n for n in NETWORKS]
-            } for i in range(1, NUM_AGENTS + 1)
+                "ports" : [f"{net_config["PORT"] + i}:{net_config["PORT"]}"],
+                "networks" : [n for n in net_config["NETWORKS"]]
+            } for i in range(1, net_config["NUM_AGENTS"] + 1)
         },
         "networks":{
             n:{
                 "driver" : "bridge"
-            } for n in NETWORKS
+            } for n in net_config["NETWORKS"]
         }
     }
     
